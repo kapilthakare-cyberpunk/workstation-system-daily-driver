@@ -1,0 +1,5 @@
+#!/bin/bash
+# ~/bin/mcp-status
+
+echo "=== MCP Servers ==="
+ps aux | grep -E "mcp|claude" | grep -v grep

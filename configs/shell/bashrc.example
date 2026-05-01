@@ -1,0 +1,85 @@
+# ~/.bashrc – Ultimate Badass Enhanced & Secure v3.1
+# Kapil Satish Thakare | Auto-updated: $(date +%Y-%m-%d)
+# ----------------------------------------------------------------------
+# SECURITY & ENVIRONMENT
+[[ $- != *i* ]] && return
+[[ -f ~/.env ]] && source ~/.env
+export OLLAMA_HOST="127.0.0.1:11434"
+export OLLAMA_NUM_PARALLEL=2
+export OLLAMA_MAX_LOADED_MODELS=2
+export OLLAMA_KEEP_ALIVE=30m
+export OLLAMA_API_KEY="5ca07c83ca664a07bcc6a37ead1561fd.QHDVg1n54JCuLzADiyuj8Mvw"
+# Intel Iris Xe GPU optimization
+export OLLAMA_NUM_GPU=99
+export OLLAMA_MAX_VRAM=4294967296
+export OLLAMA_GPU_LAYERS=99
+export OLLAMA_BATCH_SIZE=512
+export OLLAMA_CONTEXT_LENGTH=4096
+
+# MCP
+export MCP_DOWNLOAD_DIR="$HOME/Downloads/mcp-images"
+export MCP_MAX_CONCURRENT_DOWNLOADS=3
+export MCP_IMAGE_TIMEOUT=30
+
+# ----------------------------------------------------------------------
+# PATH
+path_dirs=(
+"$HOME/.local/bin"
+"$HOME/.ollama/bin"
+"$HOME/bin"
+"$HOME/.npm-global/bin"
+)
+for dir in "${path_dirs[@]}"; do
+  [[ -d "$dir" ]] && [[ ":$PATH:" != *":$dir:"* ]] && PATH="$dir:$PATH"
+done
+export PATH
+
+# MCP Server Environment Variables
+export GMAIL_MCP_COMMAND='/home/kapilt/Projects/Gmail-MCP-Server/gmail-mcp-wrapper.sh'
+export WHATSAPP_MCP_COMMAND='/home/kapilt/Projects/wweb-mcp/start-whatsapp-mcp.sh'
+
+# Source MCP Server Environment Variables
+source ~/.mcp-servers.env
+
+# fd completion
+source /usr/share/bash-completion/completions/fd.bash
+
+# Create alias for fd as fdfind
+alias fd='fdfind'
+
+# Created by `pipx` on 2025-09-19 12:13:57
+export PATH="$PATH:/home/kapilt/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
+alias docker-compose="docker compose"
+export PATH="$HOME/.local/bin:$PATH"
+. "$HOME/.cargo/env"
+alias serenamcp="uvx --from git+https://github.com/oraios/serena serena start-mcp-server"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/kapilt/.lmstudio/bin"
+# End of LM Studio CLI section
+
+export TODOIST_API_KEY="your_actual_api_key_here"
+# Powerline setup for shell prompts
+# Set up powerline command directly instead of using daemon due to Python 3.14 compatibility issues
+export POWERLINE_COMMAND="powerline"
+export POWERLINE_BASH_CONTINUATION=1
+export POWERLINE_BASH_SELECT=1
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+export OPENAI_API_KEY="your_openai_api_key_here"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# SSH Agent
+if [ -z "$SSH_AUTH_SOCK" ]; then
+   eval "$(ssh-agent -s)" > /dev/null
+   ssh-add ~/.ssh/id_ed25519 2>/dev/null
+fi
+export MESA_VK_DEVICE_SELECT="Intel"
+alias gpu="gpu-check"
+alias adbcon="/home/kapilt/adb-wifi-connect.sh"
+alias adb-gui="python3 /home/kapilt/adb-wifi-setup.py"
+
+. "$HOME/.atuin/bin/env"
+
+[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
+eval "$(atuin init bash)"

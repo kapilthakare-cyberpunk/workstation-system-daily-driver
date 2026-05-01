@@ -1,0 +1,58 @@
+#!/bin/bash
+# ~/bin/project-new
+
+PROJECT_NAME=$1
+PROJECT_TYPE=${2:-nodejs}  # nodejs, python, go
+PROJECT_DIR="$HOME/Projects/$PROJECT_NAME"
+
+if [ -z "$PROJECT_NAME" ]; then
+    echo "Usage: project-new <name> [type]"
+    exit 1
+fi
+
+mkdir -p "$PROJECT_DIR"
+cd "$PROJECT_DIR"
+git init
+
+# Create based on type
+case $PROJECT_TYPE in
+  nodejs)
+    npm init -y
+    echo -e "node_modules/\n.env\ndist/\n*.log" > .gitignore
+    ;;
+  python)
+    python3 -m venv venv
+    echo -e "venv/\n__pycache__/\n.env\n*.pyc\n.pytest_cache/" > .gitignore
+    ;;
+  go)
+    go mod init "github.com/kapilt/$PROJECT_NAME"
+    echo -e "bin/\ndist/\n.env\n*.exe" > .gitignore
+    ;;
+esac
+
+# Common files
+cat > README.md << EOF
+# $PROJECT_NAME
+
+## Quick Start
+
+## Development
+
+## Deployment
+EOF
+
+cat > .claude.md << EOF
+# $PROJECT_NAME Context
+
+## Tech Stack
+- $PROJECT_TYPE
+
+## Commands
+- Start: 
+- Test: 
+- Build: 
+
+## Notes
+EOF
+
+echo "Project $PROJECT_NAME created in $PROJECT_DIR"

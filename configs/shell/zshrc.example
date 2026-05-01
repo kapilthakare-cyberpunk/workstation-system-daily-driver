@@ -1,0 +1,335 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+
+# ~/.zshrc (Linux Mint) — maintained with ChatGPT
+
+# Path to your Oh My Zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Theme
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Plugins
+plugins=(git zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting)
+
+source $ZSH/oh-my-zsh.sh
+
+# Powerlevel10k instant prompt
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+
+# NVM (Node Version Manager) - MUST BE BEFORE OTHER NODE TOOLS
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# MCP INITIALIZATION MESSAGE (disabled to speed up startup)
+# Uncomment below to re-enable:
+# if [[ $- == *i* ]] && [[ -z "$MCP_INFO_SHOWN" ]]; then
+#     export MCP_INFO_SHOWN=1
+#     echo "💡 MCP Environment Loaded!"
+#     echo "   Quick commands:"
+#     echo "   • mcp-scan       - Scan for all MCP servers"
+#     echo "   • mcp-run [name] - Start server"
+#     echo "   • mcp-npx [name] - Install & run with npx (no local install)"
+#     echo "   • mcp-status     - View running servers"
+# fi
+
+# -------------------------------
+# ENVIRONMENT VARIABLES
+# -------------------------------
+export EDITOR="nano"
+export VISUAL="nano"
+export PAGER="less"
+
+# -------------------------------
+# PATH
+# -------------------------------
+export PATH="$HOME/.local/bin:$HOME/.lmstudio/bin:$PATH"
+
+# -------------------------------
+# MCP
+# -------------------------------
+export MCP_DATA_DIR="$HOME/.mcp/data"
+export MCP_CACHE_DIR="$HOME/.mcp/cache"
+[[ ! -d "$MCP_DATA_DIR" ]] && mkdir -p "$MCP_DATA_DIR"
+[[ ! -d "$MCP_CACHE_DIR" ]] && mkdir -p "$MCP_CACHE_DIR"
+
+# -------------------------------
+# SECRETS (from 1Password)
+# -------------------------------
+export SKYVERN_API_KEY="$(op item get "Skyvern" --field api_key 2>/dev/null)"
+export TODOIST_API_KEY="$(op item get "Todoist" --field api_key 2>/dev/null)"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Local LLaMA Code Assistant
+llama() {
+    local TARGET_DIR
+
+    if [ -z "$1" ]; then
+        TARGET_DIR="$(pwd)"
+    else
+        TARGET_DIR="$(realpath "$1")"
+    fi
+
+    if [ ! -d "$TARGET_DIR" ]; then
+        echo "Error: $TARGET_DIR is not a directory"
+        return 1
+    fi
+
+    gnome-terminal -- bash -c \
+        "python3 /home/kapilt/local_code_assistant/code_assistant.py \"$TARGET_DIR\"; exec bash"
+}
+
+# bun completions
+[ -s "/home/kapilt/.bun/_bun" ] && source "/home/kapilt/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Composio CLI
+export COMPOSIO_INSTALL_DIR=/home/kapilt/.composio
+export PATH="/home/kapilt/.composio:$PATH"
+
+# Quick aliases for CLAUDE.md workflow
+alias health='system-health'
+alias sync='daily-sync'
+alias organize='downloads-organize'
+alias df-h='df -h'
+
+# Development shortcuts
+alias serve='python3 -m http.server'
+alias claude-here='claude'
+
+# Git quick aliases (if not already defined)
+alias gs='git status' 2>/dev/null || true
+alias gl='git log --oneline -10' 2>/dev/null || true
+
+# File listing
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Safety aliases
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Add ~/bin to PATH if not already present
+[[ ":$PATH:" != *":$HOME/bin:"* ]] && export PATH="$HOME/bin:$PATH"
+
+
+# OpenClaw Completion (disabled to prevent hangs)
+# Uncomment below if needed, but consider loading in background:
+# (openclaw completion --shell zsh > ~/.cache/openclaw-completion.zsh 2>/dev/null && source ~/.cache/openclaw-completion.zsh) &
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+
+# wacli completions
+fpath=(~/.zsh/completions $fpath)
+
+# opencode
+export PATH=/home/kapilt/.opencode/bin:$PATH
+
+# SSH Agent
+if [ -z "$SSH_AUTH_SOCK" ]; then
+   eval "$(ssh-agent -s)" > /dev/null
+   ssh-add ~/.ssh/id_ed25519 2>/dev/null
+fi
+export OPENAI_API_KEY="your_openai_api_key_here"
+export OLLAMA_API_KEY="your_ollama_api_key_here"
+
+# -------------------------------
+# OLLAMA - LOCAL MODEL OPTIMIZATION
+# -------------------------------
+# Intel Iris Xe GPU acceleration (Tiger Lake)
+export OLLAMA_NUM_GPU=99              # Maximize GPU layers for Intel Iris Xe
+export OLLAMA_MAX_VRAM=4294967296     # 4GB VRAM limit for Iris Xe shared memory
+export OLLAMA_GPU_LAYERS=99           # Offload all layers to GPU
+export OLLAMA_BATCH_SIZE=512          # Optimized for 8GB system RAM
+export OLLAMA_CONTEXT_LENGTH=4096     # Balance performance vs memory
+export OLLAMA_KEEP_ALIVE=30m          # Keep model loaded for faster responses
+export OLLAMA_MAX_LOADED_MODELS=2     # Allow 2 models cached
+
+# -------------------------------
+# DAILY DRIVER FUNCTIONS
+# -------------------------------
+# Created: 2026-04-07
+
+# Navigation (functions allow arguments)
+proj() {
+    if [ -z "$1" ]; then
+        cd ~/Projects
+    else
+        cd ~/Projects/"$1"
+    fi
+}
+docs() { cd ~/Documents; }
+dl() { cd ~/Downloads; }
+pics() { cd ~/Pictures; }
+
+# System
+cpu() { ps aux --sort=-%cpu | head -10; }
+mem() { ps aux --sort=-%mem | head -10; }
+du-sort() { du -sh */ 2>/dev/null | sort -hr | head -20; }
+myip() { curl -s ipinfo.io/ip; }
+
+# Claude helpers
+claude-start() {
+    cd ~/Projects/claude-marketplace 2>/dev/null || cd ~/Projects
+    claude
+}
+
+ollama-start() {
+    sudo systemctl start ollama
+    echo "Ollama started on http://localhost:11434"
+}
+
+docker-start() {
+    sudo systemctl start docker
+    echo "Docker started"
+}
+
+docker-stop() {
+    sudo systemctl stop docker
+    echo "Docker stopped"
+}
+
+mcp-status() {
+    echo "=== MCP Servers ==="
+    pgrep -a "mcp-server" 2>/dev/null || echo "No MCP servers running"
+}
+
+mcp-kill-all() {
+    pkill -f "mcp-server"
+    pkill -f "claude.*mcp"
+    echo "All MCP servers stopped"
+}
+
+# Daily workflow
+alias sync='daily-sync'
+alias health='system-health'
+alias organize='downloads-organize'
+alias newproj='project-new'
+
+# Git shortcuts
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline -10'
+alias gco='git checkout'
+
+# Safety
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+export OLLAMA_NUM_PARALLEL=2          # Handle 2 concurrent requests
+
+# -------------------------------
+# Intel GPU Vulkan Acceleration
+# -------------------------------
+export MESA_VK_DEVICE_SELECT="Intel"
+export VULKAN_DEVICE_SELECT="Intel"
+export ANV_VK_DRIVER_NAME="intel"
+
+# GPU aliases
+alias gpu="gpu-check"
+alias gpu-on="gpu-on"
+
+# -------------------------------
+# ManageEngine Mobile Device Manager Plus
+# -------------------------------
+# NOTE: MDM Plus runs as a Windows service + web application.
+# The web console is accessible at http://localhost:9020
+# Uses Linux nginx as reverse proxy to bypass Wine networking issues.
+#
+# Setup: ~/setup-mdm-nginx.sh (run once to configure nginx)
+
+# Start MDM service (runs in background)
+alias mdm='wine "C:\\Program Files\\ManageEngine\\MDMServer\\bin\\MDMP.exe" &'
+
+# Open web console in browser (PRIMARY WAY TO ACCESS MDM)
+alias mdm-web='xdg-open http://localhost:9020 &'
+
+# Check if MDM web console is running
+alias mdm-status='(curl -s -o /dev/null -w "HTTP Status: %{http_code}\\n" http://localhost:9020 && echo "✓ MDM web console is running on http://localhost:9020") || echo "✗ MDM web console is NOT running"'
+
+# Kill all MDMP processes (use with caution - stops the service)
+alias mdm-kill='pkill -9 -f "MDMP.exe" && echo "✓ MDMP processes killed"'
+
+# View recent MDM logs
+alias mdm-logs='tail -100 -f ~/.wine/drive_c/Program\ Files/ManageEngine/MDMServer/logs/serverout0.txt'
+
+# Restart nginx proxy (if needed)
+alias mdm-nginx-restart='sudo systemctl restart nginx && echo "✓ Nginx proxy restarted"'
+export PATH="$HOME/bin:$PATH"
+
+# -------------------------------
+# WHATSAPP MULTI-SESSION REMINDER
+# -------------------------------
+# Display WhatsApp quick commands on each new terminal session
+if [[ $- == *i* ]]; then
+    echo ""
+    echo "╔══════════════════════════════════════════════════════════╗"
+    echo "║           💬 WhatsApp Multi-Session Ready                ║"
+    echo "╠══════════════════════════════════════════════════════════╣"
+    echo "║  Launch:                                                 ║"
+    echo "║    whatsapp-personal     → Personal WhatsApp             ║"
+    echo "║    whatsapp-business     → Business WhatsApp             ║"
+    echo "║    whatsapp-automation   → Hastapop/Superchat/Automation ║"
+    echo "║                                                          ║"
+    echo "║  Fix Database Error:                                     ║"
+    echo "║    whatsapp-fix-database → Clear corrupted data          ║"
+    echo "║                                                          ║"
+    echo "║  Manage:                                                 ║"
+    echo "║    whatsapp-manager help → All commands                  ║"
+    echo "║    whatsapp-manager status → Check profiles              ║"
+    echo "╚══════════════════════════════════════════════════════════╝"
+    echo ""
+fi
+alias adbcon="/home/kapilt/adb-wireless-manager/scripts/connect.sh"
+alias adb-gui="python3 /home/kapilt/adb-wireless-manager/gui/adb_wireless_manager.py"
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh)"
+
+# Use stable Flatpak LibreOffice for command-line tools
+export PATH="$HOME/.local/bin:$PATH"
+alias libreoffice='flatpak run org.libreoffice.LibreOffice'
+alias libreoffice-writer='flatpak run org.libreoffice.LibreOffice --writer'
+alias libreoffice-calc='flatpak run org.libreoffice.LibreOffice --calc'
+alias libreoffice-impress='flatpak run org.libreoffice.LibreOffice --impress'
+alias lo='flatpak run org.libreoffice.LibreOffice'
+alias lo-headless='flatpak run org.libreoffice.LibreOffice --headless'
+
+# LibreOffice MCP Server commands
+alias lo-mcp-start='~/.mcp-libre/start-server.sh'
+alias lo-mcp-status='tail -10 ~/mcp-extension.log'
+alias lo-mcp-test='~/.mcp-libre/test-connection.sh'
+alias memhog='watch -n 2 "ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%mem | head -6"'
+
+# Free Claude Code Automation
+function claude-free() {
+    local PROXY_DIR="/home/kapilt/Projects/free-claude-code"
+    local PORT=8082
+    
+    # Start proxy in background if not already running on the port
+    if ! lsof -i :$PORT > /dev/null 2>&1; then
+        echo "🚀 Starting Free Claude Code proxy..."
+        (cd "$PROXY_DIR" && uv run uvicorn server:app --host 0.0.0.0 --port $PORT > /dev/null 2>&1 &)
+        # Wait a moment for the server to spin up
+        sleep 2
+    fi
+    
+    # Launch Claude with the necessary environment variables
+    # Pass any additional arguments through to the claude command
+    ANTHROPIC_AUTH_TOKEN="freecc" ANTHROPIC_BASE_URL="http://localhost:$PORT" claude "$@"
+}

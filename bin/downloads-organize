@@ -1,0 +1,32 @@
+#!/bin/bash
+# ~/bin/downloads-organize
+
+DOWNLOADS="$HOME/Downloads"
+
+# Ensure subdirectories exist
+mkdir -p "$DOWNLOADS"/{Archives,Code,Images,Installers,Media,PDFs,Spreadsheets,Misc}
+
+# Archives
+mv -n $DOWNLOADS/*.{zip,tar,gz,bz2,xz,7z,rar} $DOWNLOADS/Archives/ 2>/dev/null
+
+# Code
+mv -n $DOWNLOADS/*.{js,ts,py,go,rs,java,c,cpp,h,json,yaml,yml} $DOWNLOADS/Code/ 2>/dev/null
+mv -n $DOWNLOADS/*-main $DOWNLOADS/Code/ 2>/dev/null  # GitHub zips
+
+# Images
+mv -n $DOWNLOADS/*.{jpg,jpeg,png,gif,webp,svg,bmp,raw,cr2} $DOWNLOADS/Images/ 2>/dev/null
+mv -n $DOWNLOADS/*screenshot* $DOWNLOADS/Images/ 2>/dev/null
+
+# Installers
+mv -n $DOWNLOADS/*.{deb,AppImage,flatpakref} $DOWNLOADS/Installers/ 2>/dev/null
+
+# Media
+mv -n $DOWNLOADS/*.{mp4,mkv,avi,mov,webm,mp3,wav,flac} $DOWNLOADS/Media/ 2>/dev/null
+
+# PDFs
+mv -n $DOWNLOADS/*.pdf $DOWNLOADS/PDFs/ 2>/dev/null
+
+# Spreadsheets
+mv -n $DOWNLOADS/*.{ods,xlsx,xls,csv} $DOWNLOADS/Spreadsheets/ 2>/dev/null
+
+echo "Downloads organized."

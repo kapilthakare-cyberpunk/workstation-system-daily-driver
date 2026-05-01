@@ -1,0 +1,7 @@
+*/15 * * * * KTS_DB_PATH=/home/kapilt/KTs-Assistant/reply_system.db /home/kapilt/KTs-Assistant/kts_assistant.py --message 'Ping check' --chat-jid '' --message-id '' >/home/kapilt/KTs-Assistant/cron.log 2>&1
+# Venom Assistant automatic updates
+5 9-18 * * 1-5 /usr/bin/python3 /home/kapilt/clawd/run_scheduled_update.py >> /home/kapilt/clawd/logs/update_cron.log 2>&1
+15 */4 * * * /usr/bin/python3 /home/kapilt/clawd/run_scheduled_update.py >> /home/kapilt/clawd/logs/update_cron.log 2>&1
+30 12,13,14 * * 1-5 /usr/bin/python3 /home/kapilt/clawd/run_scheduled_update.py >> /home/kapilt/clawd/logs/update_cron.log 2>&1
+*/30 * * * * /home/kapilt/bin/downloads-organize >/dev/null 2>&1
+0 2 * * * /home/kapilt/bin/daily-sync >/dev/null 2>&1

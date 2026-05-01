@@ -1,0 +1,40 @@
+#!/bin/bash
+# ~/bin/daily-sync
+
+echo "=== Daily System Sync ==="
+echo "$(date)"
+
+# 1. Clean Downloads
+echo "→ Organizing Downloads..."
+$HOME/bin/downloads-organize
+
+# 2. Backup dotfiles
+echo "→ Backing up configs..."
+mkdir -p $HOME/.dotfiles
+cp ~/.zshrc $HOME/.dotfiles/ 2>/dev/null
+cp ~/.bashrc $HOME/.dotfiles/ 2>/dev/null
+cp -r ~/.claude/rules $HOME/.dotfiles/ 2>/dev/null
+
+# 3. Clean temp files
+echo "→ Cleaning temp files..."
+rm -rf ~/.cache/thumbnails/* 2>/dev/null
+rm -rf ~/tmp/* 2>/dev/null
+
+# 4. Docker cleanup (if docker running)
+if systemctl is-active --quiet docker; then
+  echo "→ Docker cleanup..."
+  docker system prune -f --volumes 2>/dev/null
+fi
+
+# 5. Update dotfiles git if it exists
+if [ -d "$HOME/.dotfiles/.git" ]; then
+  cd $HOME/.dotfiles
+  git add .
+  git commit -m "Daily auto-backup $(date +%Y-%m-%d)" 2>/dev/null
+fi
+
+# 6. Check disk space
+echo "→ Disk usage:"
+df -h ~ | tail -1
+
+echo "=== Sync Complete ==="

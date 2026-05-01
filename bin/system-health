@@ -1,0 +1,35 @@
+#!/bin/bash
+# ~/bin/system-health
+
+echo "=== System Health ==="
+echo "$(date '+%Y-%m-%d %H:%M:%S')"
+echo ""
+
+echo "┌─ CPU ───────────────────────"
+cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)
+echo "Usage: ${cpu_usage}%"
+echo "Temperature: $(cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null | head -1 | awk '{print $1/1000"°C"}')"
+echo ""
+
+echo "┌─ Memory ────────────────────"
+free -h | grep -E "Mem|Swap"
+echo ""
+
+echo "┌─ Disk ──────────────────────"
+df -h ~
+echo ""
+
+echo "┌─ Top Processes ───────────"
+ps aux --sort=-%mem | head -6
+echo ""
+
+echo "┌─ Kernel ────────────────────"
+echo "Swappiness: $(cat /proc/sys/vm/swappiness)"
+echo "Cache Pressure: $(cat /proc/sys/vm/vfs_cache_pressure)"
+echo ""
+
+echo "┌─ Boot Time ─────────────────"
+systemd-analyze 2>/dev/null || echo "Systemd not available"
+echo ""
+
+echo "=== End Report ==="
