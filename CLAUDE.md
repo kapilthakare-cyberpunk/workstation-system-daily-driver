@@ -1,8 +1,8 @@
 # CLAUDE.md - Workstation System Daily Driver Configuration
 
 > **System:** Linux Mint 22.3 (Zena) | Intel i5-1135G7 @ 2.40GHz | 7.5GB RAM | 366GB SSD
-> **Shell:** Zsh + Oh My Zsh + Powerlevel10k | **Editor:** Nano
-> **Created:** 2026-04-07 | **Maintained by:** Claude
+> **DE:** MATE (Primary) / XFCE (Secondary) | **Shell:** Zsh + Oh My Zsh + Powerlevel10k
+> **Created:** 2026-04-07 | **Last Updated:** 2026-05-02 | **Maintained by:** Claude
 
 ---
 
@@ -36,6 +36,7 @@ systemd-analyze critical-chain
 sudo systemctl disable --now snapd  # If not using snaps
 disable all MCP servers from auto-starting
 disable unused AI assistant background services
+# Cinnamon removed to reduce overhead
 ```
 
 **Fast Boot Settings:**
@@ -48,7 +49,7 @@ GRUB_CMDLINE_LINUX_DEFAULT="quiet splash nomodeset"
 
 **Startup Applications (whitelist only):**
 - Network Manager
-- Cinnamon desktop core
+- MATE desktop core / XFCE components
 - Powerlevel10k instant prompt
 - **NO** AI tools at startup (start on-demand)
 
@@ -550,7 +551,7 @@ myip() { curl -s ipinfo.io/ip; }
 
 ## Notes & Updates
 
-**Last Updated:** 2026-04-07
+**Last Updated:** 2026-05-01
 **Next Review:** 2026-05-07
 
 **TODO:**
@@ -562,3 +563,5 @@ myip() { curl -s ipinfo.io/ip; }
 ---
 
 *This configuration is maintained by Claude. Update with `/edit CLAUDE.md` or ask Claude to modify specific sections.*
+ CLAUDE.md` or ask Claude to modify specific sections.*
+Claude. Update with `/edit CLAUDE.md` or ask Claude to modify specific sections.*

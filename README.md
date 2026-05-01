@@ -6,6 +6,7 @@ A comprehensive system management and automation suite for Linux workstations, s
 ## Features
 - Boot Optimization: Targeted configurations to achieve sub-15s boot times.
 - Memory Management: Optimized kernel and shell settings for 7.5GB RAM environments.
+- Desktop Environments: Dual-setup with MATE (Primary) and XFCE (Secondary), optimized for performance and stability.
 - Directory Standardization: Enforced organizational standards for Home, Projects, and Documents.
 - Automated Organization: Background scripts for sorting downloads and cleaning temporary files.
 - Maintenance Suite: Integrated health checks and daily synchronization routines.
@@ -45,9 +46,11 @@ The suite provides several CLI utilities for daily workstation management:
 ## Roadmap
 - [x] Initial system health and sync scripts.
 - [x] Standardized folder structure implementation.
+- [x] Self-hosted n8n with MCP Server integration.
 - [ ] Automated backup rotation and retention policy.
 - [ ] Further optimization of systemd startup services.
 - [ ] Integration of AI tool telemetry for performance monitoring.
 
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
+ `LICENSE` for more information.
