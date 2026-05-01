@@ -30,7 +30,7 @@ export NVM_DIR="$HOME/.nvm"
 # Uncomment below to re-enable:
 # if [[ $- == *i* ]] && [[ -z "$MCP_INFO_SHOWN" ]]; then
 #     export MCP_INFO_SHOWN=1
-#     echo "💡 MCP Environment Loaded!"
+#     echo "[INFO] MCP Environment Loaded!"
 #     echo "   Quick commands:"
 #     echo "   • mcp-scan       - Scan for all MCP servers"
 #     echo "   • mcp-run [name] - Start server"
@@ -259,16 +259,16 @@ alias mdm='wine "C:\\Program Files\\ManageEngine\\MDMServer\\bin\\MDMP.exe" &'
 alias mdm-web='xdg-open http://localhost:9020 &'
 
 # Check if MDM web console is running
-alias mdm-status='(curl -s -o /dev/null -w "HTTP Status: %{http_code}\\n" http://localhost:9020 && echo "✓ MDM web console is running on http://localhost:9020") || echo "✗ MDM web console is NOT running"'
+alias mdm-status='(curl -s -o /dev/null -w "HTTP Status: %{http_code}\\n" http://localhost:9020 && echo "[OK] MDM web console is running on http://localhost:9020") || echo "[ERR] MDM web console is NOT running"'
 
 # Kill all MDMP processes (use with caution - stops the service)
-alias mdm-kill='pkill -9 -f "MDMP.exe" && echo "✓ MDMP processes killed"'
+alias mdm-kill='pkill -9 -f "MDMP.exe" && echo "[OK] MDMP processes killed"'
 
 # View recent MDM logs
 alias mdm-logs='tail -100 -f ~/.wine/drive_c/Program\ Files/ManageEngine/MDMServer/logs/serverout0.txt'
 
 # Restart nginx proxy (if needed)
-alias mdm-nginx-restart='sudo systemctl restart nginx && echo "✓ Nginx proxy restarted"'
+alias mdm-nginx-restart='sudo systemctl restart nginx && echo "[OK] Nginx proxy restarted"'
 export PATH="$HOME/bin:$PATH"
 
 # -------------------------------
@@ -278,7 +278,7 @@ export PATH="$HOME/bin:$PATH"
 if [[ $- == *i* ]]; then
     echo ""
     echo "╔══════════════════════════════════════════════════════════╗"
-    echo "║           💬 WhatsApp Multi-Session Ready                ║"
+    echo "║              WhatsApp Multi-Session Ready                ║"
     echo "╠══════════════════════════════════════════════════════════╣"
     echo "║  Launch:                                                 ║"
     echo "║    whatsapp-personal     → Personal WhatsApp             ║"
@@ -323,7 +323,7 @@ function claude-free() {
     
     # Start proxy in background if not already running on the port
     if ! lsof -i :$PORT > /dev/null 2>&1; then
-        echo "🚀 Starting Free Claude Code proxy..."
+        echo "[START] Starting Free Claude Code proxy..."
         (cd "$PROXY_DIR" && uv run uvicorn server:app --host 0.0.0.0 --port $PORT > /dev/null 2>&1 &)
         # Wait a moment for the server to spin up
         sleep 2
